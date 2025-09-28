@@ -1,0 +1,4 @@
+defaultProject: sky-vault-473510
+defaultDataset: staging
+defaultAssertionDataset: staging
+dataformCoreVersion: 3.0.26
