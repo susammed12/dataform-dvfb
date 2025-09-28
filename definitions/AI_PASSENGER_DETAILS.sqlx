@@ -1,0 +1,8 @@
+Wrapper
+config {
+    type: "declaration",
+    database: "sky-vault-473510",
+    schema: "staging",
+    name: "AI_PASSENGER_DETAILS",
+    description: "AirIndia passenger information"
+}
