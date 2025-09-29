@@ -1,4 +1,4 @@
-eclare({
+declare({
   database: "sky-vault-473510",
   schema: "staging",
   name: "AI_AIRPORT_DETAILS"
