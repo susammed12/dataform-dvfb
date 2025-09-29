@@ -1,0 +1,23 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["hub"]
+}
+
+SELECT MD5(PaymentID) AS HK_PaymentID,
+  PaymentID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_PASSENGER' AS REC_SRC
+FROM sky-vault-473510.staging.AI_BOOKING_DETAILS
+WHERE PaymentID IS NOT NULL
+GROUP BY PaymentID
+
+UNION ALL
+
+SELECT MD5(PaymentID) AS HK_PaymentID,
+  PaymentID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'SJ_PASSENGER' AS REC_SRC
+FROM sky-vault-473510.staging.SJ_BOOKING_DETAILS
+WHERE PaymentID IS NOT NULL
+GROUP BY PaymentID
