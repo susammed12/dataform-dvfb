@@ -4,7 +4,7 @@ config {
   tags: ["hub"]
 }
 
-SELECT MD5(PassengerID) AS HK_PassengerID,
+SELECT TO_HEX(SHA256(CAST(PassengerID AS STRING))) AS HK_PassengerID,
   PassengerID,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'AI_PASSENGER' AS REC_SRC
@@ -14,7 +14,7 @@ GROUP BY PassengerID
 
 UNION ALL
 
-SELECT MD5(PassengerID) AS HK_PassengerID,
+SELECT TO_HEX(SHA256(CAST(PassengerID AS STRING))) AS HK_PassengerID,
   PassengerID,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'SJ_PASSENGER' AS REC_SRC
