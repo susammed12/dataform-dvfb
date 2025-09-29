@@ -1,0 +1,31 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["hub"]
+}
+
+SELECT MD5(BookingID) AS HK_BookingID,
+  Status,
+  BookingDate,
+  SeatNumber,
+  SeatClass,
+  CreatedDateTime,
+  LastupdateDateTime,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_BOOKING' AS REC_SRC
+FROM sky-vault-473510.staging.AI_BOOKING_DETAILS
+WHERE BookingID IS NOT NULL
+
+UNION ALL
+
+SELECT MD5(BookingID) AS HK_BookingID,
+    Status,
+  BookingDate,
+  SeatNumber,
+  SeatClass,
+  CreatedDateTime,
+  LastupdateDateTime,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'SJ_BOOKING' AS REC_SRC
+FROM sky-vault-473510.staging.SJ_BOOKING_DETAILS
+WHERE BookingID IS NOT NULL
