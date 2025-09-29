@@ -3,7 +3,7 @@ config {
   tags: ["hub"]
 }
 
-SELECT
+SELECT MD5(PassengerID) AS HK_PassengerID,
   PassengerID,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'AI_PASSENGER_DETAILS' AS REC_SRC
