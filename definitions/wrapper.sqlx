@@ -1,7 +1,0 @@
-config {
-    type: "declaration",
-    database: "sky-vault-473114",
-    schema: "staging",
-    name: "AI_PASSENGER_DETAILS",
-    description: "AirIndia passenger information"
-}
