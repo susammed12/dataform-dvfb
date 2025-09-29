@@ -5,7 +5,6 @@ config {
 }
 
 SELECT MD5(AirportCode) AS HK_AirportCode,
-  AirportCode,
   AirportName,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'AI_AIRPORT' AS REC_SRC
@@ -15,7 +14,6 @@ WHERE AirportCode IS NOT NULL
 UNION ALL
 
 SELECT MD5(AirportCode) AS HK_AirportCode,
-  AirportCode,
   AirportName,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'SJ_AIRPORT' AS REC_SRC
