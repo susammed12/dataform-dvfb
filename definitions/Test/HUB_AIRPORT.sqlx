@@ -1,5 +1,6 @@
 config {
   type: "table",
+  schema: "raw_vault",
   tags: ["hub"]
 }
 
