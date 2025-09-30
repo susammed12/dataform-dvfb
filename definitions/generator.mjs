@@ -22,8 +22,7 @@ const metadata = {
   ]
 };
 
-// Ensure the target directory exists
-const targetDir = path.join(__dirname, ../test generator);
+const targetDir = path.join(__dirname, ../raw_vault_auto_generator);
 
 if (!fs.existsSync(targetDir)) {
   fs.mkdirSync(targetDir, { recursive: true });
