@@ -5,13 +5,13 @@ const metadata = {
     {
       "table_name": "FLIGHT",
       "business_key": "FlightID",
-      "source_table_AI": "AI_FLIGHT_DETAILS"
+      "source_table_AI": "AI_FLIGHT_DETAILS",
 	  "source_table_SJ": "SJ_FLIGHT_DETAILS"
     },
     {
       "table_name": "AIRPORT",
       "business_key": "AirportCode",
-      "source_table_AI": "AI_AIRPORT_DETAILS"
+      "source_table_AI": "AI_AIRPORT_DETAILS",
 	  "source_table_SJ": "SJ_AIRPORT_DETAILS"
     }
   ]
