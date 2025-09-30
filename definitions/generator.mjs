@@ -10,6 +10,7 @@ const metadata = {
     {
       "table_name": "FLIGHT",
       "business_key": "FlightID",
+      "table_type": "HUB",
       "source_table_AI": "AI_FLIGHT_DETAILS",
       "source_table_SJ": "SJ_FLIGHT_DETAILS"
     },
@@ -58,7 +59,7 @@ GROUP BY ${business_key}
 
 metadata.hubs.forEach(hub => {
   const script = generateHub(hub.table_name, hub.business_key, hub.source_table_AI, hub.source_table_SJ);
-  const fileName = `${hub.table_name.toLowerCase()}.sqlx`;
+  const fileName = `${table_type}_${hub.table_name.toupperCase()}.sqlx`;
   const filePath = path.join(targetDir, fileName);
   fs.writeFileSync(filePath, script);
   console.log(`✅ SQLX file '${filePath}' has been created.`);
