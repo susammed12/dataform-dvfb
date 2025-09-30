@@ -23,7 +23,7 @@ const metadata = {
 };
 
 // Ensure the target directory exists
-const targetDir = path.join(__dirname, '../dataform-repo/definitions');
+const targetDir = path.join(__dirname, '../test generator');
 
 if (!fs.existsSync(targetDir)) {
   fs.mkdirSync(targetDir, { recursive: true });
