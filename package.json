@@ -1,0 +1,24 @@
+{
+  "name": "sky-vault-ws",
+  "version": "1.0.0",
+  "description": "As a part of fire breaker need to build data model using dataform (Hackathon data vault Q2. 25-26)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/susammed12/dataform-dvfb.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/susammed12/dataform-dvfb/issues"
+  },
+  "homepage": "https://github.com/susammed12/dataform-dvfb#readme",
+  "dependencies": {
+    "csv-parse": "^6.1.0"
+  }
+}
