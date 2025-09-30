@@ -45,13 +45,9 @@ GROUP BY ${business_key};
 `;
 }
 
-const sqlxScripts = [];
-
 metadata.hubs.forEach(hub => {
-  sqlxScripts.push(generateHub(hub.table_name, hub.business_key, hub.source_table_AI, hub.source_table_SJ));
+  const script = generateHub(hub.table_name, hub.business_key, hub.source_table_AI, hub.source_table_SJ);
+  const fileName = `${hub.table_name.toLowerCase()}.sqlx`;
+  fs.writeFileSync(fileName, script);
+  console.log(`✅ SQLX file '${fileName}' has been created.`);
 });
-
-// Write to a .sqlx file
-fs.writeFileSync("generated_hubs.sqlx", sqlxScripts.join("\n\n"));
-
-console.log("✅ SQLX file 'generated_hubs.sqlx' has been created.");
