@@ -15,7 +15,6 @@ const records = parse(csvContent, {
 });
 
 const targetDir = path.join(__dirname, '../definitions/rv_generator');
-
 if (!fs.existsSync(targetDir)) {
   fs.mkdirSync(targetDir, { recursive: true });
 }
@@ -63,24 +62,27 @@ function generateSatellite(table_name, business_key, descriptive_fields, source_
 config {
   type: "table",
   schema: "raw_vault",
-  tags: ["satellites"]
+  tags: ["satellite"]
 }
 
-SELECT MD5(${business_key}) AS HK_${business_key},
-  ${descriptive_fields},
+SELECT
+  MD5(${business_key}) AS HK_${business_key},
+  ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
 WHERE ${business_key} IS NOT NULL
-
+GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 UNION ALL
-
-SELECT MD5(${business_key}) AS HK_${business_key},
-  ${descriptive_fields},
+SELECT
+  MD5(${business_key}) AS HK_${business_key},
+  ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${business_key} IS NOT NULL
+GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
+`.trim();
 }
 
 // --- MAIN LOOP ---
