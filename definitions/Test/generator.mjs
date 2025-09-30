@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 const metadata = {
   "hubs": [
     {
@@ -38,4 +40,7 @@ metadata.hubs.forEach(hub => {
   sqlxScripts.push(generateHub(hub.table_name, hub.business_key, hub.source_table));
 });
 
-sqlxScripts.forEach(script => console.log(script));
+// Write to a .sqlx file
+fs.writeFileSync("generated_hubs.sqlx", sqlxScripts.join("\n\n"));
+
+console.log("✅ SQLX file 'generated_hubs.sqlx' has been created.");
