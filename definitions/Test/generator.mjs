@@ -24,8 +24,11 @@ const metadata = {
 
 // Ensure the target directory exists
 const targetDir = path.join(__dirname, '../dataform-repo/definitions');
-fs.mkdirSync(targetDir, { recursive: true })
+
+if (!fs.existsSync(targetDir)) {
+  fs.mkdirSync(targetDir, { recursive: true });
 }
+
 
 function generateHub(table_name, business_key, source_table_AI, source_table_SJ) {
   return `
