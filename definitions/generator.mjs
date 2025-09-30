@@ -17,6 +17,7 @@ const metadata = {
     {
       "table_name": "AIRPORT",
       "business_key": "AirportCode",
+      "table_type": "HUB",
       "source_table_AI": "AI_AIRPORT_DETAILS",
       "source_table_SJ": "SJ_AIRPORT_DETAILS"
     }
