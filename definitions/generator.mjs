@@ -81,6 +81,7 @@ SELECT MD5(${business_key}) AS HK_${business_key},
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${business_key} IS NOT NULL
+}
 
 // --- MAIN LOOP ---
 records.forEach(row => {
