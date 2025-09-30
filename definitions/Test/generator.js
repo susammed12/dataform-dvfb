@@ -26,7 +26,7 @@ SELECT
   ${business_key},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table}' AS REC_SRC
-FROM ${ref(source_table)}
+FROM ${source_table}
 WHERE ${business_key} IS NOT NULL
 GROUP BY ${business_key};
 `;
