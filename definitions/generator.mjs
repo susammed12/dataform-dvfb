@@ -51,7 +51,7 @@ GROUP BY ${business_key}
 // --- SATELLITE GENERATOR ---
 function generateSatellite(table_name, business_key, descriptive_fields, source_table_AI, source_table_SJ) {
   const attributes = descriptive_fields
-    .split('\\n')
+    .split('\n')
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
 
