@@ -17,10 +17,11 @@ const records = parse(csvContent, {
 const targetDir = path.join(__dirname, '../definitions/rv_generator');
 
 if (!fs.existsSync(targetDir)) {
-  fs.mkdirSync(targetDir);
+  fs.mkdirSync(targetDir, { recursive: true });
 }
 
-function generateHub(table_name, table_type, business_key, source_table_AI, source_table_SJ) {
+// --- HUB GENERATOR ---
+function generateHub(table_name, business_key, source_table_AI, source_table_SJ) {
   return `
 config {
   type: "table",
@@ -45,13 +46,66 @@ SELECT
 FROM \${ref("${source_table_SJ}")}
 WHERE ${business_key} IS NOT NULL
 GROUP BY ${business_key}
-`;
+`.trim();
 }
 
-records.forEach(hub => {
-  const script = generateHub(hub.table_name, hub.table_type, hub.business_key, hub.source_table_AI, hub.source_table_SJ);
-  const fileName = `${hub.table_type}_${hub.table_name.toUpperCase()}.sqlx`;
-  const filePath = path.join(targetDir, fileName);
-  fs.writeFileSync(filePath, script);
-  console.log(`✅ SQLX file '${filePath}' has been created.`);
+// --- SATELLITE GENERATOR ---
+function generateSatellite(table_name, business_key, descriptive_fields, source_table_AI, source_table_SJ) {
+  const attributes = descriptive_fields
+    .split('\\n')
+    .map(attr => attr.trim())
+    .filter(attr => attr.length > 0);
+
+  const attrSelect = attributes.join(',\n  ');
+  const attrGroup = attributes.join(', ');
+
+  return `
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["satellites"]
+}
+
+SELECT MD5(${business_key}) AS HK_${business_key},
+  ${descriptive_fields},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_AI}' AS REC_SRC
+FROM \${ref("${source_table_AI}")}
+WHERE ${business_key} IS NOT NULL
+
+UNION ALL
+
+SELECT MD5(${business_key}) AS HK_${business_key},
+  ${descriptive_fields},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_SJ}' AS REC_SRC
+FROM \${ref("${source_table_SJ}")}
+WHERE ${business_key} IS NOT NULL
+
+// --- MAIN LOOP ---
+records.forEach(row => {
+  if (row.table_type === 'HUB') {
+    const script = generateHub(
+      row.table_name,
+      row.business_key,
+      row.source_table_AI,
+      row.source_table_SJ
+    );
+    const fileName = `HUB_${row.table_name.toUpperCase()}.sqlx`;
+    const filePath = path.join(targetDir, fileName);
+    fs.writeFileSync(filePath, script);
+    console.log(`✅ HUB SQLX file '${filePath}' has been created.`);
+  } else if (row.table_type === 'SAT') {
+    const script = generateSatellite(
+      row.table_name,
+      row.business_key,
+      row.descriptive_fields,
+      row.source_table_AI,
+      row.source_table_SJ
+    );
+    const fileName = `SAT_${row.table_name.toUpperCase()}.sqlx`;
+    const filePath = path.join(targetDir, fileName);
+    fs.writeFileSync(filePath, script);
+    console.log(`✅ SAT SQLX file '${filePath}' has been created.`);
+  }
 });
