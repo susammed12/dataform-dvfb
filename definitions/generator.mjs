@@ -1,28 +1,18 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { parse } from 'csv-parse/sync';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const metadata = {
-  "hubs": [
-    {
-      "table_name": "FLIGHT",
-      "business_key": "FlightID",
-      "table_type": "HUB",
-      "source_table_AI": "AI_FLIGHT_DETAILS",
-      "source_table_SJ": "SJ_FLIGHT_DETAILS"
-    },
-    {
-      "table_name": "AIRPORT",
-      "business_key": "AirportCode",
-      "table_type": "HUB",
-      "source_table_AI": "AI_AIRPORT_DETAILS",
-      "source_table_SJ": "SJ_AIRPORT_DETAILS"
-    }
-  ]
-};
+const csvPath = path.join(__dirname, 'metadata.csv');
+const csvContent = fs.readFileSync(csvPath, 'utf-8');
+
+const records = parse(csvContent, {
+  columns: true,
+  skip_empty_lines: true
+});
 
 const targetDir = path.join(__dirname, '../definitions/rv_generator');
 
