@@ -30,7 +30,7 @@ if (!fs.existsSync(targetDir)) {
   fs.mkdirSync(targetDir);
 }
 
-function generateHub(table_name, business_key, source_table_AI, source_table_SJ) {
+function generateHub(table_name, table_type, business_key, source_table_AI, source_table_SJ) {
   return `
 config {
   type: "table",
@@ -59,7 +59,7 @@ GROUP BY ${business_key}
 }
 
 metadata.hubs.forEach(hub => {
-  const script = generateHub(hub.table_name, hub.business_key, hub.source_table_AI, hub.source_table_SJ);
+  const script = generateHub(hub.table_name, hub.table_type, hub.business_key, hub.source_table_AI, hub.source_table_SJ);
   const fileName = `${table_type}_${hub.table_name.toupperCase()}.sqlx`;
   const filePath = path.join(targetDir, fileName);
   fs.writeFileSync(filePath, script);
