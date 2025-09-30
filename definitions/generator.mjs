@@ -52,7 +52,7 @@ SELECT
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${business_key} IS NOT NULL
-GROUP BY ${business_key};
+GROUP BY ${business_key}
 `;
 }
 
