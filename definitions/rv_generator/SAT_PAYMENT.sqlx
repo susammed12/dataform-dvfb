@@ -1,24 +1,23 @@
-
 config {
   type: "table",
   schema: "raw_vault",
-  tags: ["hub"]
+  tags: ["satellite"]
 }
 
 SELECT
   MD5(PaymentID) AS HK_PaymentID,
-  PaymentID,
+  PaymentMethod|Amount|TransactionDate|Status,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'AI_PAYMENT' AS REC_SRC
 FROM ${ref("AI_PAYMENT")}
 WHERE PaymentID IS NOT NULL
-GROUP BY PaymentID
+GROUP BY PaymentID, PaymentMethod|Amount|TransactionDate|Status
 UNION ALL
 SELECT
   MD5(PaymentID) AS HK_PaymentID,
-  PaymentID,
+  PaymentMethod|Amount|TransactionDate|Status,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'SJ_PAYMENT' AS REC_SRC
 FROM ${ref("SJ_PAYMENT")}
 WHERE PaymentID IS NOT NULL
-GROUP BY PaymentID
+GROUP BY PaymentID, PaymentMethod|Amount|TransactionDate|Status
