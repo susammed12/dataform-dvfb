@@ -24,10 +24,10 @@ const metadata = {
 
 const targetDir = path.join(__dirname, raw_vault_auto_generator);
 
-if (!fs.existsSync(targetDir)) {
-  fs.mkdirSync(targetDir, { recursive: true });
 }
-
+if (!fs.existsSync(targetDir)) {
+  fs.mkdirSync(targetDir);
+}
 
 function generateHub(table_name, business_key, source_table_AI, source_table_SJ) {
   return `
