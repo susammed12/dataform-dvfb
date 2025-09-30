@@ -91,7 +91,7 @@ records.forEach(row => {
       row.source_table_AI,
       row.source_table_SJ
     );
-    const fileName = `${row.table_type}_${row.table_name.toUpperCase()}.sqlx`;
+    const fileName = `HUB_${row.table_name.toUpperCase()}.sqlx`;
     const filePath = path.join(targetDir, fileName);
     fs.writeFileSync(filePath, script);
     console.log(`✅ HUB SQLX file '${filePath}' has been created.`);
@@ -103,7 +103,7 @@ records.forEach(row => {
       row.source_table_AI,
       row.source_table_SJ
     );
-    const fileName = `${row.table_type}_${row.table_name.toUpperCase()}.sqlx`;
+    const fileName = `SAT_${row.table_name.toUpperCase()}.sqlx`;
     const filePath = path.join(targetDir, fileName);
     fs.writeFileSync(filePath, script);
     console.log(`✅ SAT SQLX file '${filePath}' has been created.`);
