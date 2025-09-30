@@ -1,5 +1,9 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const metadata = {
   "hubs": [
@@ -58,4 +62,4 @@ metadata.hubs.forEach(hub => {
   const filePath = path.join(targetDir, fileName);
   fs.writeFileSync(filePath, script);
   console.log(`✅ SQLX file '${filePath}' has been created.`);
-});
+})
