@@ -1,0 +1,7 @@
+config {
+    type: "table",
+    tags: ["test"]
+}
+
+SELECT * FROM ${ref("AI_AIRPORT_DETAILS")}
+WHERE AirportName = 'Pune'
