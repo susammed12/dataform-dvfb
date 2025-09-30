@@ -1,0 +1,27 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["sat"]
+}
+
+SELECT MD5(PaymentID) AS HK_PaymentID,
+  PaymentMethod,
+  Amount,
+  TransactionDate,
+  Status,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_PAYMENT' AS REC_SRC
+FROM ${ref("AI_PAYMENT")}
+WHERE PaymentID IS NOT NULL
+
+UNION ALL
+
+SELECT MD5(PaymentID) AS HK_PaymentID,
+  PaymentMethod,
+  Amount,
+  TransactionDate,
+  Status,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'SJ_PAYMENT' AS REC_SRC
+FROM ${ref("SJ_PAYMENT")}
+WHERE PaymentID IS NOT NULL

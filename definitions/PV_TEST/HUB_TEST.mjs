@@ -1,6 +1,3 @@
-
-const fs = require('fs');
-
 const metadata = {
   "hubs": [
     {
@@ -13,14 +10,14 @@ const metadata = {
       "business_key": "AirportCode",
       "source_table": "AI_AIRPORT_DETAILS"
     }
-
-]
+  ]
 };
 
 function generateHub(table_name, business_key, source_table) {
   return `
 config {
   type: "table",
+  schema: "raw_vault",
   tags: ["hub"]
 }
 
@@ -29,9 +26,9 @@ SELECT
   ${business_key},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table}' AS REC_SRC
-
-FROM ${source_table}
-WHERE ${business_key} IS NOT NULL;
+FROM ${ref(source_table)}
+WHERE ${business_key} IS NOT NULL
+GROUP BY ${business_key};
 `;
 }
 
@@ -41,5 +38,4 @@ metadata.hubs.forEach(hub => {
   sqlxScripts.push(generateHub(hub.table_name, hub.business_key, hub.source_table));
 });
 
-// Write to a .sqlx file
-fs.writeFileSync("generated_hubs.sqlx", sqlxScripts.join("\n\n"));
+sqlxScripts.forEach(script => console.log(script));

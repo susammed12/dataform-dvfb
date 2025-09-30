@@ -1,0 +1,16 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["link"]
+}
+
+SELECT MD5(AirportCode) AS HK_AirportCode,
+MD5(FlightID) AS HK_FlightID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_AIRPORT' AS REC_SRC
+FROM ${ref("AI_AIRPORT_DETAILS")}
+FULL JOIN ${ref("AI_FLIGHT_DETAILS")}
+ON OriginAirportCode = AirportCode
+WHERE AirportCode IS NOT NULL
+AND FlightID IS NOT NULL
+GROUP BY AirportCode, FlightID 
