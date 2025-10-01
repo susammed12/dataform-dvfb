@@ -1,3 +1,91 @@
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { parse } from 'csv-parse/sync';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const csvPath = path.join(__dirname, 'metadata.csv');
+const csvContent = fs.readFileSync(csvPath, 'utf-8');
+
+const records = parse(csvContent, {
+  columns: true,
+  skip_empty_lines: true
+});
+
+const targetDir = path.join(__dirname, '../definitions/rv_generator');
+if (!fs.existsSync(targetDir)) {
+  fs.mkdirSync(targetDir, { recursive: true });
+}
+
+// --- HUB GENERATOR ---
+function generateHub(table_name, business_key, source_table_AI, source_table_SJ) {
+  return `
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["hub"]
+}
+
+SELECT
+  MD5(${business_key}) AS HK_${business_key},
+  ${business_key},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_AI}' AS REC_SRC
+FROM \${ref("${source_table_AI}")}
+WHERE ${business_key} IS NOT NULL
+GROUP BY ${business_key}
+UNION ALL
+SELECT
+  MD5(${business_key}) AS HK_${business_key},
+  ${business_key},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_SJ}' AS REC_SRC
+FROM \${ref("${source_table_SJ}")}
+WHERE ${business_key} IS NOT NULL
+GROUP BY ${business_key}
+`.trim();
+}
+
+// --- SATELLITE GENERATOR ---
+function generateSatellite(table_name, business_key, descriptive_fields, source_table_AI, source_table_SJ) {
+  const attributes = descriptive_fields
+    .split('|')
+    .map(attr => attr.trim())
+    .filter(attr => attr.length > 0);
+
+  const attrSelect = attributes.join(',\n  ');
+  const attrGroup = attributes.join(', ');
+
+  return `
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["satellite"]
+}
+
+SELECT
+  MD5(${business_key}) AS HK_${business_key},
+  ${attrSelect},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_AI}' AS REC_SRC
+FROM \${ref("${source_table_AI}")}
+WHERE ${business_key} IS NOT NULL
+GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
+UNION ALL
+SELECT
+  MD5(${business_key}) AS HK_${business_key},
+  ${attrSelect},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_SJ}' AS REC_SRC
+FROM \${ref("${source_table_SJ}")}
+WHERE ${business_key} IS NOT NULL
+GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
+`.trim();
+}
+
+// --- MAIN LOOP ---
 records.forEach(row => {
   if (row.table_type === 'HUB') {
     const script = generateHub(
