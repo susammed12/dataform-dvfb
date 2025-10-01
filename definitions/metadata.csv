@@ -4,7 +4,7 @@ PASSENGER_DETAILS_AI,SAT,PassengerID,FirstName|LastName|DOB|Email|CreatedDateTim
 PASSENGER_DETAILS_SJ,SAT,PassengerID,,FirstName|LastName|DOB|Email|MobileNumber|CreatedDateTime|LastupdateDateTime,,SJ_PASSENGER_DETAILS
 BOOKING_DETAILS,HUB,BookingID,,,AI_BOOKING_DETAILS,SJ_BOOKING_DETAILS
 BOOKING_DETAILS_AI,SAT,BookingID,Status|BookingDate|SeatNumber|SeatClass|CreatedDateTime|LastupdateDateTime,,AI_BOOKING_DETAILS,
-BOOKING_DETAILS_SJ,SAT,BookingID,'Status|BookingDate|SeatNumber|SeatClass|CreatedDateTime|LastupdateDateTime,,SJ_BOOKING_DETAILS
+BOOKING_DETAILS_SJ,SAT,BookingID,,Status|BookingDate|SeatNumber|SeatClass|CreatedDateTime|LastupdateDateTime,,SJ_BOOKING_DETAILS
 PAYMENT,HUB,PaymentID,,,AI_PAYMENT,SJ_PAYMENT
 PAYMENT_AI,SAT,PaymentID,PaymentMethod|Amount|TransactionDate|Status,,AI_PAYMENT,
 PAYMENT_SJ,SAT,PaymentID,,PaymentMethod|Amount|TransactionDate|Status,,SJ_PAYMENT
