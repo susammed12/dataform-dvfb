@@ -49,8 +49,8 @@ GROUP BY ${business_key}
 }
 
 // --- AI SATELLITE GENERATOR ---
-function generateSatellite_AI(table_name, business_key, descriptive_fields, source_table_AI) {
-  const attributes = (descriptive_fields || '')
+function generateSatellite_AI(table_name, business_key, descriptive_fields_AI, source_table_AI) {
+  const attributes = (descriptive_fields_AI || '')
     .split('|')
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
@@ -77,8 +77,8 @@ GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 }
 
 // --- SJ SATELLITE GENERATOR ---
-function generateSatellite_SJ(table_name, business_key, descriptive_fields, source_table_SJ) {
-  const attributes = (descriptive_fields || '')
+function generateSatellite_SJ(table_name, business_key, descriptive_fields_SJ, source_table_SJ) {
+  const attributes = (descriptive_fields_SJ || '')
     .split('|')
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
@@ -122,7 +122,7 @@ records.forEach(row => {
     const scriptAI = generateSatellite_AI(
       row.table_name,
       row.business_key,
-      row.descriptive_fields,
+      row.descriptive_fields_AI,
       row.source_table_AI
     );
     const fileNameAI = `SAT_${row.table_name.toUpperCase()}.sqlx`;
@@ -134,7 +134,7 @@ records.forEach(row => {
     const scriptSJ = generateSatellite_SJ(
       row.table_name,
       row.business_key,
-      row.descriptive_fields,
+      row.descriptive_fields_SJ,
       row.source_table_SJ
     );
     const fileNameSJ = `SAT_${row.table_name.toUpperCase()}.sqlx`;
