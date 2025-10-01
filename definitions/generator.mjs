@@ -48,8 +48,8 @@ GROUP BY ${business_key}
 `.trim();
 }
 
-// --- SATELLITE GENERATOR ---
-function generateSatellite(table_name, business_key, descriptive_fields, source_table_AI, source_table_SJ) {
+// --- AI SATELLITE GENERATOR ---
+function generate AI Satellite(table_name, business_key, descriptive_fields, source_table_AI) {
   const attributes = descriptive_fields
     .split('|')
     .map(attr => attr.trim())
@@ -73,7 +73,26 @@ SELECT
 FROM \${ref("${source_table_AI}")}
 WHERE ${business_key} IS NOT NULL
 GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
-UNION ALL
+`.trim();
+}
+
+// --- SJ SATELLITE GENERATOR ---
+function generateSatellite(table_name, business_key, descriptive_fields, source_table_SJ) {
+  const attributes = descriptive_fields
+    .split('|')
+    .map(attr => attr.trim())
+    .filter(attr => attr.length > 0);
+
+  const attrSelect = attributes.join(',\n  ');
+  const attrGroup = attributes.join(', ');
+
+  return `
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["satellite"]
+}
+
 SELECT
   MD5(${business_key}) AS HK_${business_key},
   ${attrSelect},
