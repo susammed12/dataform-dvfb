@@ -49,7 +49,7 @@ GROUP BY ${business_key}
 }
 
 // --- AI SATELLITE GENERATOR ---
-function generate AI Satellite(table_name, business_key, descriptive_fields, source_table_AI) {
+function generateSatellite_AI(table_name, business_key, descriptive_fields, source_table_AI) {
   const attributes = descriptive_fields
     .split('|')
     .map(attr => attr.trim())
@@ -77,7 +77,7 @@ GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 }
 
 // --- SJ SATELLITE GENERATOR ---
-function generateSatellite(table_name, business_key, descriptive_fields, source_table_SJ) {
+function generateSatellite_SJ(table_name, business_key, descriptive_fields, source_table_SJ) {
   const attributes = descriptive_fields
     .split('|')
     .map(attr => attr.trim())
