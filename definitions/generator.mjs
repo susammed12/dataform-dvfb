@@ -125,7 +125,7 @@ records.forEach(row => {
       row.descriptive_fields_AI,
       row.source_table_AI
     );
-    const fileNameAI = `SAT_${row.table_name.toUpperCase()}.sqlx`;
+    const fileNameAI = `SAT_${row.table_name.toUpperCase()}_AI.sqlx`;
     const filePathAI = path.join(targetDir, fileNameAI);
     fs.writeFileSync(filePathAI, scriptAI);
     console.log(`✅ SAT SQLX file '${filePathAI}' has been created.`);
@@ -137,7 +137,7 @@ records.forEach(row => {
       row.descriptive_fields_SJ,
       row.source_table_SJ
     );
-    const fileNameSJ = `SAT_${row.table_name.toUpperCase()}.sqlx`;
+    const fileNameSJ = `SAT_${row.table_name.toUpperCase()}_SJ.sqlx`;
     const filePathSJ = path.join(targetDir, fileNameSJ);
     fs.writeFileSync(filePathSJ, scriptSJ);
     console.log(`✅ SAT SQLX file '${filePathSJ}' has been created.`);
