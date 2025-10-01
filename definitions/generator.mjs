@@ -125,10 +125,10 @@ records.forEach(row => {
       row.descriptive_fields,
       row.source_table_AI
     );
-    const fileNameAI = `SAT_AI_${row.table_name.toUpperCase()}.sqlx`;
+    const fileNameAI = `SAT_${row.table_name.toUpperCase()}.sqlx`;
     const filePathAI = path.join(targetDir, fileNameAI);
     fs.writeFileSync(filePathAI, scriptAI);
-    console.log(`✅ SAT_AI SQLX file '${filePathAI}' has been created.`);
+    console.log(`✅ SAT SQLX file '${filePathAI}' has been created.`);
 
     // Generate SJ Satellite
     const scriptSJ = generateSatellite_SJ(
@@ -137,9 +137,9 @@ records.forEach(row => {
       row.descriptive_fields,
       row.source_table_SJ
     );
-    const fileNameSJ = `SAT_SJ_${row.table_name.toUpperCase()}.sqlx`;
+    const fileNameSJ = `SAT_${row.table_name.toUpperCase()}.sqlx`;
     const filePathSJ = path.join(targetDir, fileNameSJ);
     fs.writeFileSync(filePathSJ, scriptSJ);
-    console.log(`✅ SAT_SJ SQLX file '${filePathSJ}' has been created.`);
+    console.log(`✅ SAT SQLX file '${filePathSJ}' has been created.`);
   }
 });
