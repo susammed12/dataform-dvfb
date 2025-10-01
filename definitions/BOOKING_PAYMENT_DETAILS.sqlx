@@ -1,0 +1,12 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["source for link"]
+}
+
+SELECT
+  MD5(BOOKINGID) AS HK_BOOKINGID,
+  MD5(${ref("AI_PAYMENT")}.PAYMENTID) AS HK_PAYMENTID
+FROM ${ref("AI_BOOKING_DETAILS")}
+LEFT JOIN ${ref("AI_PAYMENT")}
+ON ${ref("AI_BOOKING_DETAILS")}.PAYMENTID = ${ref("AI_PAYMENT")}.PAYMENTID
