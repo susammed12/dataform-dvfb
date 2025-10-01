@@ -13,8 +13,8 @@ SELECT
   SeatCapacity,
   AvailableSeats,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
-  'AI_FLIGHT_DETAILS' AS REC_SRC
-FROM ${ref("AI_FLIGHT_DETAILS")}
+  '' AS REC_SRC
+FROM ${ref("")}
 WHERE FlightID IS NOT NULL
 GROUP BY FlightID, FlightNumber, ArrivalDateTime, ScheduledDepartureDateTime, ActualDepartureDateTime, SeatCapacity, AvailableSeats
 UNION ALL

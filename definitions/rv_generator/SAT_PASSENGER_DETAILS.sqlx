@@ -14,8 +14,8 @@ SELECT
   CreatedDateTime,
   LastupdateDateTime,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
-  'AI_PASSENGER_DETAILS' AS REC_SRC
-FROM ${ref("AI_PASSENGER_DETAILS")}
+  '' AS REC_SRC
+FROM ${ref("")}
 WHERE PassengerID IS NOT NULL
 GROUP BY PassengerID, FirstName, LastName, DOB, Email, MobileNumber, CreatedDateTime, LastupdateDateTime
 UNION ALL
