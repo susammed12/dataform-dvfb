@@ -104,6 +104,41 @@ GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 `.trim();
 }
 
+// --- LINK GENERATOR ---
+function generateLink(table_name, business_keys, source_table_AI, source_table_SJ) {
+  const keys = business_keys.split('|').map(k => k.trim()).filter(k => k.length > 0);
+  const keySelect = keys.join(',\n  ');
+  const keyGroup = keys.join(', ');
+  const hashKey = `HK_${table_name.toUpperCase()}`;
+  const hashExpression = keys.map(k => `COALESCE(${k}, '')`).join(" || '|' || ");
+
+  return `
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["link"]
+}
+
+SELECT
+  MD5(${hashExpression}) AS ${hashKey},
+  ${keySelect},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_AI}' AS REC_SRC
+FROM \${ref("${source_table_AI}")}
+WHERE ${keys.map(k => `${k} IS NOT NULL`).join(' AND ')}
+GROUP BY ${keyGroup}
+UNION ALL
+SELECT
+  MD5(${hashExpression}) AS ${hashKey},
+  ${keySelect},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_SJ}' AS REC_SRC
+FROM \${ref("${source_table_SJ}")}
+WHERE ${keys.map(k => `${k} IS NOT NULL`).join(' AND ')}
+GROUP BY ${keyGroup}
+`.trim();
+}
+
 // --- MAIN LOOP ---
 records.forEach(row => {
   if (row.table_type === 'HUB') {
@@ -117,8 +152,8 @@ records.forEach(row => {
     const filePath = path.join(targetDir, fileName);
     fs.writeFileSync(filePath, script);
     console.log(`✅ HUB SQLX file '${filePath}' has been created.`);
+
   } else if (row.table_type === 'SAT') {
-    // Generate AI Satellite
     const scriptAI = generateSatellite_AI(
       row.table_name,
       row.business_key,
@@ -128,9 +163,8 @@ records.forEach(row => {
     const fileNameAI = `SAT_${row.table_name.toUpperCase()}_AI.sqlx`;
     const filePathAI = path.join(targetDir, fileNameAI);
     fs.writeFileSync(filePathAI, scriptAI);
-    console.log(`✅ SAT SQLX file '${filePathAI}' has been created.`);
+    console.log(`✅ SAT AI SQLX file '${filePathAI}' has been created.`);
 
-    // Generate SJ Satellite
     const scriptSJ = generateSatellite_SJ(
       row.table_name,
       row.business_key,
@@ -140,6 +174,18 @@ records.forEach(row => {
     const fileNameSJ = `SAT_${row.table_name.toUpperCase()}_SJ.sqlx`;
     const filePathSJ = path.join(targetDir, fileNameSJ);
     fs.writeFileSync(filePathSJ, scriptSJ);
-    console.log(`✅ SAT SQLX file '${filePathSJ}' has been created.`);
+    console.log(`✅ SAT SJ SQLX file '${filePathSJ}' has been created.`);
+
+  } else if (row.table_type === 'LINK') {
+    const script = generateLink(
+      row.table_name,
+      row.business_keys,
+      row.source_table_AI,
+      row.source_table_SJ
+    );
+    const fileName = `LINK_${row.table_name.toUpperCase()}.sqlx`;
+    const filePath = path.join(targetDir, fileName);
+    fs.writeFileSync(filePath, script);
+    console.log(`✅ LINK SQLX file '${filePath}' has been created.`);
   }
 });
