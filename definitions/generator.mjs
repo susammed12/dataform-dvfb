@@ -105,8 +105,8 @@ GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 }
 
 // --- LINK GENERATOR ---
-function generateLink(table_name, business_keys, source_table_AI, source_table_SJ) {
-  const keys = business_keys.split('|').map(k => k.trim()).filter(k => k.length > 0);
+function generateLink(table_name, business_key, source_table_AI, source_table_SJ) {
+  const keys = business_key.split('|').map(k => k.trim()).filter(k => k.length > 0);
   const keySelect = keys.join(',\n  ');
   const keyGroup = keys.join(', ');
   const hashKey = `HK_${table_name.toUpperCase()}`;
@@ -179,7 +179,7 @@ records.forEach(row => {
   } else if (row.table_type === 'LINK') {
     const script = generateLink(
       row.table_name,
-      row.business_keys,
+      row.business_key,
       row.source_table_AI,
       row.source_table_SJ
     );
