@@ -76,6 +76,34 @@ GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 `.trim();
 }
 
+// --- SJ SATELLITE GENERATOR ---
+function generateSatellite_SJ(table_name, business_key, descriptive_fields_SJ, source_table_SJ) {
+  const attributes = (descriptive_fields_SJ || '')
+    .split('|')
+    .map(attr => attr.trim())
+    .filter(attr => attr.length > 0);
+
+  const attrSelect = attributes.join(',\n  ');
+  const attrGroup = attributes.join(', ');
+
+  return `
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["satellite"]
+}
+
+SELECT
+  MD5(${business_key}) AS HK_${business_key},
+  ${attrSelect},
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  '${source_table_SJ}' AS REC_SRC
+FROM \${ref("${source_table_SJ}")}
+WHERE ${business_key} IS NOT NULL
+GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
+`.trim();
+}
+
 // --- MAIN LOOP ---
 records.forEach(row => {
   if (row.table_type === 'HUB') {
@@ -97,9 +125,21 @@ records.forEach(row => {
       row.descriptive_fields_AI,
       row.source_table_AI
     );
-    const fileNameAI = `SAT_${row.table_name.toUpperCase()}.sqlx`;
+    const fileNameAI = `SAT_AI_${row.table_name.toUpperCase()}.sqlx`;
     const filePathAI = path.join(targetDir, fileNameAI);
     fs.writeFileSync(filePathAI, scriptAI);
     console.log(`✅ SAT SQLX file '${filePathAI}' has been created.`);
+
+    // Generate SJ Satellite
+    const scriptSJ = generateSatellite_SJ(
+      row.table_name,
+      row.business_key,
+      row.descriptive_fields_SJ,
+      row.source_table_SJ
+    );
+    const fileNameSJ = `SAT_SJ_${row.table_name.toUpperCase()}.sqlx`;
+    const filePathSJ = path.join(targetDir, fileNameSJ);
+    fs.writeFileSync(filePathSJ, scriptSJ);
+    console.log(`✅ SAT SQLX file '${filePathSJ}' has been created.`);
   }
 });
