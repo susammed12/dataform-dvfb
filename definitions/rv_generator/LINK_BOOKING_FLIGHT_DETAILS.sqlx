@@ -1,0 +1,25 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["link"]
+}
+
+SELECT
+  MD5(COALESCE(BookingID, '') || '|' || COALESCE(FlightID, '')) AS HK_BOOKING_FLIGHT_DETAILS,
+  BookingID,
+  FlightID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_BOOKING_DETAILS' AS REC_SRC
+FROM ${ref("AI_BOOKING_DETAILS")}
+WHERE BookingID IS NOT NULL AND FlightID IS NOT NULL
+GROUP BY BookingID, FlightID
+UNION ALL
+SELECT
+  MD5(COALESCE(BookingID, '') || '|' || COALESCE(FlightID, '')) AS HK_BOOKING_FLIGHT_DETAILS,
+  BookingID,
+  FlightID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'SJ_BOOKING_DETAILS' AS REC_SRC
+FROM ${ref("SJ_BOOKING_DETAILS")}
+WHERE BookingID IS NOT NULL AND FlightID IS NOT NULL
+GROUP BY BookingID, FlightID
