@@ -1,4 +1,4 @@
 table_name,table_type,business_key,descriptive_fields_AI,source_table_AI,descriptive_fields_SJ,source_table_SJ
 AIRPORT_DETAILS,HUB,AirportCode,,AI_AIRPORT_DETAILS,,SJ_AIRPORT_DETAILS
-AIRPORT_DETAILS_AI,SAT,AirportCode,AirportName,AI_AIRPORT_DETAILS,,,
+AIRPORT_DETAILS_AI,SAT,AirportCode,AirportName,AI_AIRPORT_DETAILS,,
 AIRPORT_DETAILS_SJ,SAT,AirportCode,,,AirportName,SJ_AIRPORT_DETAILS
