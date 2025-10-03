@@ -3,12 +3,7 @@ type: "table",
 tags: ["business_vault", "monthly_bookings"]
 }
  
-SELECT SeatClass,ROUND(AVG(Amount))
+SELECT HK_BookingID
 FROM ${ref("LINK_BOOKING_PAYMENT_DETAILS")}
-JOIN ${ref("SAT_BOOKING_DETAILS_SJ")}
-USING (HK_BookingID)
-JOIN ${ref("SAT_PAYMENT_SJ")}
-USING (HK_PaymentID)
-GROUP BY 1
 
 
