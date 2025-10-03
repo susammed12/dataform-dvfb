@@ -121,21 +121,19 @@ config {
 
 SELECT
   MD5(${hashExpression}) AS ${hashKey},
-  ${keySelect},
+  MD5(${keySelect}),
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
 WHERE ${keys.map(k => `${k} IS NOT NULL`).join(' AND ')}
-GROUP BY ${keyGroup}
-UNION ALL
+UNION
 SELECT
   MD5(${hashExpression}) AS ${hashKey},
-  ${keySelect},
+  MD5(${keySelect}),
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${keys.map(k => `${k} IS NOT NULL`).join(' AND ')}
-GROUP BY ${keyGroup}
 `.trim();
 }
 
