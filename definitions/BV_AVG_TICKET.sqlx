@@ -5,7 +5,7 @@ tags: ["business_vault", "monthly_bookings"]
 }
  
 SELECT --SeatClass,
-ROUND(AVG(Amount))
+*
 FROM ${ref("LINK_BOOKING_PAYMENT_DETAILS")} LB
 --JOIN ${ref("SAT_BOOKING_DETAILS_SJ")} SB
 --ON (LB.HK_BookingID = SB.HK_BookingID)
