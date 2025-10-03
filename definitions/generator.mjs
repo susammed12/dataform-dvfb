@@ -127,7 +127,7 @@ SELECT
 FROM \${ref("${source_table_AI}")}
 WHERE ${notNullConditions}
 
-UNION
+UNION ALL
 
 SELECT
   MD5(${hashExpression}) AS ${hashKey},
