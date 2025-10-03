@@ -4,4 +4,6 @@ schema: "raw_vault",
 tags: ["business_vault", "monthly_bookings"]
 }
  
-SELECT * FROM ${ref("SAT_PAYMENT_SJ")} 
+SELECT * FROM ${ref("SAT_PAYMENT_SJ")} SP
+JOIN ${ref("LINK_BOOKING_PAYMENT_DETAILS")} LBP
+ON (SP.HK_PaymentID = LBP.HK_PaymentID)
