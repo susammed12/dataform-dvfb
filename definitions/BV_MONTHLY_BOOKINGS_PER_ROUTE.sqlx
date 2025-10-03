@@ -1,0 +1,10 @@
+config {
+type: "table",
+schema: "business_vault",
+tags: ["business_vault", "monthly_bookings_per_route"]
+}
+select EXTRACT(MONTH FROM BookingDate) AS month, count(*)
+FROM ${ref("LINK_BOOKING_FLIGHT_DETAILS")} LBF
+join ${ref("SAT_BOOKING_DETAILS_AI")} SB
+on LBF.HK_BookingID = SB.HK_BookingID
+group by 1
