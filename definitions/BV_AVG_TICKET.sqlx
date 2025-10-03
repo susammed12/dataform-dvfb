@@ -10,3 +10,5 @@ USING (HK_BookingID)
 JOIN ${ref("SAT_PAYMENT_SJ")}
 USING (HK_PaymentID)
 GROUP BY 1
+
+
