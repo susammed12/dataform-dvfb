@@ -107,10 +107,10 @@ GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 // --- LINK GENERATOR ---
 function generateLink(table_name, business_key, source_table_AI, source_table_SJ) {
   const keys = business_key.split('|').map(k => k.trim()).filter(k => k.length > 0);
-  const keySelect = keys.map(k => `MD5(${k}) AS HK_${k}`).join(',\n  ');
-  const keyGroup = keys.join(', ');
+  const md5EachKey = keys.map(k => `MD5(${k}) AS HK_${k}`).join(',\n  ');
   const hashKey = `HK_L_${table_name.toUpperCase()}`;
   const hashExpression = keys.map(k => `COALESCE(${k}, '')`).join(" || '|' || ");
+  const notNullConditions = keys.map(k => `${k} IS NOT NULL`).join(' AND ');
 
   return `
 config {
@@ -121,19 +121,21 @@ config {
 
 SELECT
   MD5(${hashExpression}) AS ${hashKey},
-  ${keySelect},
+  ${md5EachKey},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
-WHERE ${keys.map(k => `${k} IS NOT NULL`).join(' AND ')}
+WHERE ${notNullConditions}
+
 UNION
+
 SELECT
   MD5(${hashExpression}) AS ${hashKey},
-  MD5(${keySelect}),
+  ${md5EachKey},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
-WHERE ${keys.map(k => `${k} IS NOT NULL`).join(' AND ')}
+WHERE ${notNullConditions}
 `.trim();
 }
 
