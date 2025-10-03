@@ -3,27 +3,27 @@ type: "table",
 schema: "business_vault",
 tags: ["business_vault", "flight_delays"]
 }
-select FlightNumber,route,airline,avg_delay_minutes
+select FlightNumber,Route,Airline,Avg_Delay_Minutes
 from (
 (SELECT FlightNumber,
 OriginAirportCode||'-'||DestinationAirportCode AS Route,
-'Spice Jet' as airline,
-AVG(TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, MINUTE)) AS avg_delay_minutes
+'Spice Jet' as Airline,
+AVG(TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, MINUTE)) AS Avg_Delay_Minutes
 FROM ${ref("SAT_FLIGHT_DETAILS_SJ")}
 WHERE actualdeparturedatetime IS NOT NULL AND scheduleddeparturedatetime  IS NOT NULL
 GROUP BY 1,2,3
-ORDER BY avg_delay_minutes DESC
+ORDER BY Avg_Delay_Minutes DESC
 LIMIT 1)
 UNION ALL
 (SELECT FlightNumber,
 OriginAirportCode||'-'||DestinationAirportCode AS Route,
-'Air India' as airline,
-AVG(TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, MINUTE)) AS avg_delay_minutes
+'Air India' as Airline,
+AVG(TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, MINUTE)) AS Avg_Delay_Minutes
 FROM ${ref("SAT_FLIGHT_DETAILS_AI")}
 WHERE actualdeparturedatetime IS NOT NULL AND scheduleddeparturedatetime  IS NOT NULL
 GROUP BY 1,2,3
-ORDER BY avg_delay_minutes DESC
+ORDER BY Avg_Delay_Minutes DESC
 LIMIT 1)
 )
-order by avg_delay_minutes DESC
+order by Avg_Delay_Minutes DESC
 limit 1
