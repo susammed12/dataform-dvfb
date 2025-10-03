@@ -109,7 +109,7 @@ function generateLink(table_name, business_key, source_table_AI, source_table_SJ
   const keys = business_key.split('|').map(k => k.trim()).filter(k => k.length > 0);
   const keySelect = keys.map(k => `MD5(${k}) AS HK_${k}`).join(',\n  ');
   const keyGroup = keys.join(', ');
-  const hashKey = `HK_L_SUBSTR(${table_name.toUpperCase()},1,(INSTR(${table_name.toUpperCase()},'_','-1',2)))`;
+  const hashKey = `HK_L_${table_name.toUpperCase()}`;
   const hashExpression = keys.map(k => `COALESCE(${k}, '')`).join(" || '|' || ");
 
   return `
