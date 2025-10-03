@@ -5,10 +5,10 @@ tags: ["business_vault", "monthly_bookings"]
 }
  
 SELECT DISTINCT SeatClass
---,AVG(Amount)
+,AVG(Amount)
 FROM ${ref("LINK_BOOKING_PAYMENT_DETAILS")} LBP
-JOIN ${ref("SAT_BOOKING_DETAILS_SJ")} SB
+LEFT JOIN ${ref("SAT_BOOKING_DETAILS_SJ")} SB
 ON (LBP.HK_BookingID = SB.HK_BookingID)
---JOIN ${ref("SAT_PAYMENT_SJ")} SP
---ON (LBP.HK_PaymentID = SP.HK_PaymentID)
---GROUP BY 1
+LEFT JOIN ${ref("SAT_PAYMENT_SJ")} SP
+ON (LBP.HK_PaymentID = SP.HK_PaymentID)
+GROUP BY 1
