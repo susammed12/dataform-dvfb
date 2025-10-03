@@ -1,6 +1,6 @@
 config {
 type: "table",
-
+schema: "business_vault",
 tags: ["business_vault", "flight_delays"]
 }
  
