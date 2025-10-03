@@ -3,7 +3,7 @@ type: "table",
 tags: ["business_vault", "flight_delays"]
 }
  
-SELECT FlightNumber,
+(SELECT FlightNumber,
 OriginAirportCode||'-'||DestinationAirportCode AS Route,
 REC_SRC,
 AVG(TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, MINUTE)) AS avg_delay_minutes
@@ -11,3 +11,14 @@ FROM ${ref("SAT_FLIGHT_DETAILS_SJ")}
 WHERE actualdeparturedatetime IS NOT NULL AND scheduleddeparturedatetime  IS NOT NULL
 GROUP BY 1,2,3
 ORDER BY avg_delay_minutes DESC
+LIMIT 1)
+UNION ALL
+(SELECT FlightNumber,
+OriginAirportCode||'-'||DestinationAirportCode AS Route,
+REC_SRC,
+AVG(TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, MINUTE)) AS avg_delay_minutes
+FROM ${ref("SAT_FLIGHT_DETAILS_AI")}
+WHERE actualdeparturedatetime IS NOT NULL AND scheduleddeparturedatetime  IS NOT NULL
+GROUP BY 1,2,3
+ORDER BY avg_delay_minutes DESC
+LIMIT 1)
