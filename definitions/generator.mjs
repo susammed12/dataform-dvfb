@@ -1,3 +1,4 @@
+
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -55,8 +56,11 @@ function generateSatellite_AI(table_name, business_key, descriptive_fields_AI, s
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
 
-  const attrSelect = attributes.join(',\n  ');
-  const attrGroup = attributes.join(', ');
+  const attrSelect = attributes.join(',
+  ');
+  const attrGroup = attributes
+    .map(attr => `COALESCE(CAST(${attr} AS STRING), '')`)
+    .join(", '|', ");
 
   return `
 config {
@@ -67,7 +71,7 @@ config {
 
 SELECT
   MD5(${business_key}) AS HK_${business_key},
-  MD5(CONCAT(${attributes.map(attr => `COALESCE(${attr}, '')`).join(", '|', ")})) AS HASHDIFF,
+  MD5(CONCAT(${attrGroup})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
@@ -83,8 +87,11 @@ function generateSatellite_SJ(table_name, business_key, descriptive_fields_SJ, s
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
 
-  const attrSelect = attributes.join(',\n  ');
-  const attrGroup = attributes.join(', ');
+  const attrSelect = attributes.join(',
+  ');
+  const attrGroup = attributes
+    .map(attr => `COALESCE(CAST(${attr} AS STRING), '')`)
+    .join(", '|', ");
 
   return `
 config {
@@ -95,7 +102,7 @@ config {
 
 SELECT
   MD5(${business_key}) AS HK_${business_key},
-  MD5(CONCAT(${attributes.map(attr => `COALESCE(${attr}, '')`).join(", '|', ")})) AS HASHDIFF,
+  MD5(CONCAT(${attrGroup})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
@@ -107,9 +114,10 @@ WHERE ${business_key} IS NOT NULL
 // --- LINK GENERATOR ---
 function generateLink(table_name, business_key, source_table_AI, source_table_SJ) {
   const keys = business_key.split('|').map(k => k.trim()).filter(k => k.length > 0);
-  const md5EachKey = keys.map(k => `MD5(${k}) AS HK_${k}`).join(',\n  ');
+  const md5EachKey = keys.map(k => `MD5(${k}) AS HK_${k}`).join(',
+  ');
   const hashKey = `HK_L_${table_name.toUpperCase()}`;
-  const hashExpression = keys.map(k => `COALESCE(${k}, '')`).join(" || '|' || ");
+  const hashExpression = keys.map(k => `COALESCE(CAST(${k} AS STRING), '')`).join(" || '|' || ");
   const notNullConditions = keys.map(k => `${k} IS NOT NULL`).join(' AND ');
 
   return `
