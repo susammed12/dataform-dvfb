@@ -67,12 +67,12 @@ config {
 
 SELECT
   MD5(${business_key}) AS HK_${business_key},
+  MD5(CONCAT_WS('|', ${attrGroup})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
 WHERE ${business_key} IS NOT NULL
-GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 `.trim();
 }
 
@@ -95,12 +95,12 @@ config {
 
 SELECT
   MD5(${business_key}) AS HK_${business_key},
+  MD5(CONCAT_WS('|', ${attrGroup})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${business_key} IS NOT NULL
-GROUP BY ${business_key}${attrGroup ? ', ' + attrGroup : ''}
 `.trim();
 }
 
