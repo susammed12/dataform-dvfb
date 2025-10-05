@@ -1,0 +1,14 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["satellite"]
+}
+
+SELECT
+  MD5(AirportCode) AS HK_AirportCode,
+  MD5(CONCAT(COALESCE(CAST(AirportName AS STRING), ''))) AS HASHDIFF,
+  AirportName,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_AIRPORT_DETAILS' AS REC_SRC
+FROM ${ref("AI_AIRPORT_DETAILS")}
+WHERE AirportCode IS NOT NULL

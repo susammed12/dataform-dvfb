@@ -1,0 +1,17 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["satellite"]
+}
+
+SELECT
+  MD5(PaymentID) AS HK_PaymentID,
+  MD5(CONCAT(COALESCE(CAST(PaymentMethod AS STRING), ''), '|', COALESCE(CAST(Amount AS STRING), ''), '|', COALESCE(CAST(TransactionDate AS STRING), ''), '|', COALESCE(CAST(Status AS STRING), ''))) AS HASHDIFF,
+  PaymentMethod,
+  Amount,
+  TransactionDate,
+  Status,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_PAYMENT' AS REC_SRC
+FROM ${ref("AI_PAYMENT")}
+WHERE PaymentID IS NOT NULL

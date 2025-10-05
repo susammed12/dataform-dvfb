@@ -5,7 +5,7 @@ config {
 }
 
 SELECT
-  MD5(COALESCE(BookingID, '') || '|' || COALESCE(FlightID, '') || '|' || COALESCE(PassengerID, '')) AS HK_L_BOOKING_FLIGHT_PASSENGER_DETAILS,
+  MD5(COALESCE(CAST(BookingID AS STRING), '') || '|' || COALESCE(CAST(FlightID AS STRING), '') || '|' || COALESCE(CAST(PassengerID AS STRING), '')) AS HK_L_BOOKING_FLIGHT_PASSENGER_DETAILS,
   MD5(BookingID) AS HK_BookingID,
   MD5(FlightID) AS HK_FlightID,
   MD5(PassengerID) AS HK_PassengerID,
@@ -17,7 +17,7 @@ WHERE BookingID IS NOT NULL AND FlightID IS NOT NULL AND PassengerID IS NOT NULL
 UNION ALL
 
 SELECT
-  MD5(COALESCE(BookingID, '') || '|' || COALESCE(FlightID, '') || '|' || COALESCE(PassengerID, '')) AS HK_L_BOOKING_FLIGHT_PASSENGER_DETAILS,
+  MD5(COALESCE(CAST(BookingID AS STRING), '') || '|' || COALESCE(CAST(FlightID AS STRING), '') || '|' || COALESCE(CAST(PassengerID AS STRING), '')) AS HK_L_BOOKING_FLIGHT_PASSENGER_DETAILS,
   MD5(BookingID) AS HK_BookingID,
   MD5(FlightID) AS HK_FlightID,
   MD5(PassengerID) AS HK_PassengerID,
