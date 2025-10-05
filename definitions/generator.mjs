@@ -56,7 +56,7 @@ function generateSatellite_AI(table_name, business_key, descriptive_fields_AI, s
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
 
-  const attrSelect = attributes.join(',\n ');
+  const attrSelect = attributes.join(',\n  ');
   const attrGroup = attributes
     .map(attr => `COALESCE(CAST(${attr} AS STRING), '')`)
     .join(", '|', ");
@@ -76,8 +76,8 @@ SELECT
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
 WHERE ${business_key} IS NOT NULL
-}
 `.trim();
+}
 
 // --- SJ SATELLITE GENERATOR ---
 function generateSatellite_SJ(table_name, business_key, descriptive_fields_SJ, source_table_SJ) {
@@ -86,7 +86,7 @@ function generateSatellite_SJ(table_name, business_key, descriptive_fields_SJ, s
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
 
-  const attrSelect = attributes.join(',\n ');
+  const attrSelect = attributes.join(',\n  ');
   const attrGroup = attributes
     .map(attr => `COALESCE(CAST(${attr} AS STRING), '')`)
     .join(", '|', ");
