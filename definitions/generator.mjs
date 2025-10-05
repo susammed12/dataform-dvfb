@@ -67,7 +67,7 @@ config {
 
 SELECT
   MD5(${business_key}) AS HK_${business_key},
-  MD5(CONCAT(COALESCE(column1, ''), '|', COALESCE(column2, ''), '|', ...)) AS HASHDIFF,
+  MD5(CONCAT(${attributes.map(attr => `COALESCE(${attr}, '')`).join(", '|', ")})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
@@ -95,7 +95,7 @@ config {
 
 SELECT
   MD5(${business_key}) AS HK_${business_key},
-  MD5(CONCAT(COALESCE(column1, ''), '|', COALESCE(column2, ''), '|', ...)) AS HASHDIFF,
+  MD5(CONCAT(${attributes.map(attr => `COALESCE(${attr}, '')`).join(", '|', ")})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
