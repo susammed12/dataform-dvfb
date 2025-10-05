@@ -6,7 +6,7 @@ config {
 
 SELECT
   MD5(PassengerID) AS HK_PassengerID,
-  MD5(CONCAT(COALESCE(column1, ''), '|', COALESCE(column2, ''), '|', ...)) AS HASHDIFF,
+  MD5(CONCAT(COALESCE(FirstName, ''), '|', COALESCE(LastName, ''), '|', COALESCE(DOB, ''), '|', COALESCE(Email, ''), '|', COALESCE(MobileNumber, ''), '|', COALESCE(CreatedDateTime, ''), '|', COALESCE(LastupdateDateTime, ''))) AS HASHDIFF,
   FirstName,
   LastName,
   DOB,
