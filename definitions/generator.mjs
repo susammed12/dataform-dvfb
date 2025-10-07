@@ -54,7 +54,7 @@ function generateSatellite(table_name, business_key, descriptive_fields, source_
 
   return `
 config {
-  type: "table",
+  type: "incremental",
   schema: "raw_vault",
   tags: ["satellite"]
 }
