@@ -53,19 +53,32 @@ function generateSatellite(table_name, business_key, descriptive_fields, source_
     .join(", '|', ");
 
   return `
-config {
-  type: "incremental",
-  schema: "raw_vault",
-  tags: ["satellite"]
-}
+{{ config(
+  materialized = "incremental",
+  schema = "raw_vault",
+  tags = ["satellite"]
+) }}
 
+-- Step 1: Mark previous records as not current
+{% if is_incremental() %}
+UPDATE {{ this }}
+SET _is_current = FALSE
+WHERE HK_${business_key} IN (
+  SELECT MD5(${business_key})
+  FROM {{ ref("${source_table}") }}
+  WHERE ${business_key} IS NOT NULL
+);
+{% endif %}
+
+-- Step 2: Insert new records with _is_current = TRUE
 SELECT
   MD5(${business_key}) AS HK_${business_key},
   MD5(CONCAT(${attrGroup})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
-  '${source_table}' AS REC_SRC
-FROM \${ref("${source_table}")}
+  '${source_table}' AS REC_SRC,
+  TRUE AS _is_current
+FROM {{ ref("${source_table}") }}
 WHERE ${business_key} IS NOT NULL
 `.trim();
 }
