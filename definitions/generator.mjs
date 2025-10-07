@@ -50,8 +50,8 @@ GROUP BY ${business_key}
 }
 
 // --- AI SATELLITE GENERATOR ---
-function generateSatellite_AI(table_name, business_key, descriptive_fields_AI, source_table_AI) {
-  const attributes = (descriptive_fields_AI || '')
+function generateSatellite_AI(table_name, business_key, descriptive_fields, source_table) {
+  const attributes = (descriptive_fields || '')
     .split('|')
     .map(attr => attr.trim())
     .filter(attr => attr.length > 0);
@@ -73,8 +73,8 @@ SELECT
   MD5(CONCAT(${attrGroup})) AS HASHDIFF,
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
-  '${source_table_AI}' AS REC_SRC
-FROM \${ref("${source_table_AI}")}
+  '${source_table}' AS REC_SRC
+FROM \${ref("${source_table}")}
 WHERE ${business_key} IS NOT NULL
 `.trim();
 }
