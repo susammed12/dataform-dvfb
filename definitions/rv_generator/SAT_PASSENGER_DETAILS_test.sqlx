@@ -1,0 +1,32 @@
+{{ config(
+  materialized = "incremental",
+  schema = "raw_vault",
+  tags = ["satellite"]
+) }}
+
+-- Step 1: Mark previous records as not current
+{% if is_incremental() %}
+UPDATE {{ this }}
+SET _is_current = FALSE
+WHERE HK_PassengerID IN (
+  SELECT MD5(PassengerID)
+  FROM {{ ref("Passenger_Details_Test") }}
+  WHERE PassengerID IS NOT NULL
+);
+{% endif %}
+
+-- Step 2: Insert new records with _is_current = TRUE
+SELECT
+  MD5(PassengerID) AS HK_PassengerID,
+  MD5(CONCAT(COALESCE(CAST(FirstName AS STRING), ''), '|', COALESCE(CAST(LastName AS STRING), ''), '|', COALESCE(CAST(DOB AS STRING), ''), '|', COALESCE(CAST(Email AS STRING), ''), '|', COALESCE(CAST(CreatedDateTime AS STRING), ''), '|', COALESCE(CAST(LastupdateDateTime AS STRING), ''))) AS HASHDIFF,
+  FirstName,
+  LastName,
+  DOB,
+  Email,
+  CreatedDateTime,
+  LastupdateDateTime,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'Passenger_Details_Test' AS REC_SRC,
+  TRUE AS _is_current
+FROM {{ ref("Passenger_Details_Test") }}
+WHERE PassengerID IS NOT NULL

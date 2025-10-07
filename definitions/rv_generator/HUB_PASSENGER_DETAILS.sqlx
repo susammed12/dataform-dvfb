@@ -1,0 +1,14 @@
+config {
+  type: "table",
+  schema: "raw_vault",
+  tags: ["hub"]
+}
+
+SELECT
+  MD5(PassengerID) AS HK_PassengerID,
+  PassengerID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'Passenger_Details_Test' AS REC_SRC
+FROM ${ref("Passenger_Details_Test")}
+WHERE PassengerID IS NOT NULL
+GROUP BY PassengerID
