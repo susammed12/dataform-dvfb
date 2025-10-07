@@ -57,3 +57,9 @@ declare({
   schema: "staging",
   name: "SJ_PAYMENT"
 });
+
+declare({
+  database: "sky-vault-473510",
+  schema: "staging",
+  name: "Passenger_Details_Test"
+});
