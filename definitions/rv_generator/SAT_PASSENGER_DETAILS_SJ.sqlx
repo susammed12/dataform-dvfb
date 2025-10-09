@@ -1,0 +1,21 @@
+config {
+  type: "table",
+  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_PassengerID"] },
+  schema: "raw_vault",
+  tags: ["satellite"]
+}
+
+SELECT
+  TO_HEX(MD5(PassengerID)) AS HK_PassengerID,
+  FirstName,
+  LastName,
+  DOB,
+  Email,
+  MobileNumber,
+  CreatedDateTime,
+  LastupdateDateTime,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'SJ_PASSENGER_DETAILS' AS REC_SRC
+FROM ${ref("SJ_PASSENGER_DETAILS")}
+WHERE PassengerID IS NOT NULL
+GROUP BY PassengerID, FirstName, LastName, DOB, Email, MobileNumber, CreatedDateTime, LastupdateDateTime

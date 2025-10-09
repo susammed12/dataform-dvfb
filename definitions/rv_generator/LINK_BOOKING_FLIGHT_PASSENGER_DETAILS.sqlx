@@ -1,0 +1,28 @@
+config {
+  type: "table",
+  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_L_BOOKING_FLIGHT_PASSENGER_DETAILS"] },
+  schema: "raw_vault",
+  tags: ["link"]
+}
+
+SELECT
+  TO_HEX(MD5(COALESCE(BookingID, '') || '|' || COALESCE(FlightID, '') || '|' || COALESCE(PassengerID, ''))) AS HK_L_BOOKING_FLIGHT_PASSENGER_DETAILS,
+  MD5(BookingID) AS HK_BookingID,
+  MD5(FlightID) AS HK_FlightID,
+  MD5(PassengerID) AS HK_PassengerID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_BOOKING_DETAILS' AS REC_SRC
+FROM ${ref("AI_BOOKING_DETAILS")}
+WHERE BookingID IS NOT NULL AND FlightID IS NOT NULL AND PassengerID IS NOT NULL
+
+UNION ALL
+
+SELECT
+  TO_HEX(MD5(COALESCE(BookingID, '') || '|' || COALESCE(FlightID, '') || '|' || COALESCE(PassengerID, ''))) AS HK_L_BOOKING_FLIGHT_PASSENGER_DETAILS,
+  MD5(BookingID) AS HK_BookingID,
+  MD5(FlightID) AS HK_FlightID,
+  MD5(PassengerID) AS HK_PassengerID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'SJ_BOOKING_DETAILS' AS REC_SRC
+FROM ${ref("SJ_BOOKING_DETAILS")}
+WHERE BookingID IS NOT NULL AND FlightID IS NOT NULL AND PassengerID IS NOT NULL
