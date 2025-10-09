@@ -31,7 +31,7 @@ config {
 }
 
 SELECT
-  MD5(${business_key}) AS HK_${business_key},
+  TO_HEX(MD5(${business_key})) AS HK_${business_key},
   ${business_key},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
@@ -40,7 +40,7 @@ WHERE ${business_key} IS NOT NULL
 GROUP BY ${business_key}
 UNION ALL
 SELECT
-  MD5(${business_key}) AS HK_${business_key},
+  TO_HEX(MD5(${business_key})) AS HK_${business_key},
   ${business_key},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
@@ -69,7 +69,7 @@ config {
 }
 
 SELECT
-  MD5(${business_key}) AS HK_${business_key},
+  TO_HEX(MD5(${business_key})) AS HK_${business_key},
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
@@ -98,7 +98,7 @@ config {
 }
 
 SELECT
-  MD5(${business_key}) AS HK_${business_key},
+  TO_HEX(MD5(${business_key})) AS HK_${business_key},
   ${attrSelect},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
@@ -125,7 +125,7 @@ config {
 }
 
 SELECT
-  MD5(${hashExpression}) AS ${hashKey},
+  TO_HEX(MD5(${hashExpression})) AS ${hashKey},
   ${md5EachKey},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_AI}' AS REC_SRC
@@ -135,7 +135,7 @@ WHERE ${notNullConditions}
 UNION ALL
 
 SELECT
-  MD5(${hashExpression}) AS ${hashKey},
+  TO_HEX(MD5(${hashExpression})) AS ${hashKey},
   ${md5EachKey},
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   '${source_table_SJ}' AS REC_SRC
