@@ -1,6 +1,5 @@
 config {
   type: "table",
-  bigquery: { partitionBy: "LOAD_DTS", clusterBy: ["HK_L_BOOKING_PAYMENT_DETAILS"] },
   schema: "raw_vault",
   tags: ["link"]
 }
