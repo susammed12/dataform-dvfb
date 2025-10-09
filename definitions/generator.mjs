@@ -23,8 +23,8 @@ if (!fs.existsSync(targetDir)) {
 function generateHub(table_name, business_key, source_table_AI, source_table_SJ) {
   return `
 
-  const CURRENT_DATE = CURRENT_TIMESTAMP();
-  const LOAD_DATE = LOAD_DTS;
+  const CURRENT_DATE = 'CURRENT_TIMESTAMP()';
+  const LOAD_DATE = 'LOAD_DTS';
 
 config {
   type: "table",
@@ -62,8 +62,8 @@ function generateSatellite_AI(table_name, business_key, descriptive_fields_AI, s
 
   const attrSelect = attributes.join(',\n  ');
   const attrGroup = attributes.join(', ');
-  const CURRENT_DATE = CURRENT_TIMESTAMP();
-  const LOAD_DATE = LOAD_DTS;
+  const CURRENT_DATE = 'CURRENT_TIMESTAMP()';
+  const LOAD_DATE = 'LOAD_DTS';
 
   return `
 config {
@@ -93,8 +93,8 @@ function generateSatellite_SJ(table_name, business_key, descriptive_fields_SJ, s
 
   const attrSelect = attributes.join(',\n  ');
   const attrGroup = attributes.join(', ');
-  const CURRENT_DATE = CURRENT_TIMESTAMP();
-  const LOAD_DATE = LOAD_DTS;
+  const CURRENT_DATE = 'CURRENT_TIMESTAMP()';
+  const LOAD_DATE = 'LOAD_DTS';
 
   return `
 config {
@@ -122,8 +122,8 @@ function generateLink(table_name, business_key, source_table_AI, source_table_SJ
   const hashKey = `HK_L_${table_name.toUpperCase()}`;
   const hashExpression = keys.map(k => `COALESCE(${k}, '')`).join(" || '|' || ");
   const notNullConditions = keys.map(k => `${k} IS NOT NULL`).join(' AND ');
-  const CURRENT_DATE = CURRENT_TIMESTAMP();
-  const LOAD_DATE = LOAD_DTS;
+  const CURRENT_DATE = 'CURRENT_TIMESTAMP()';
+  const LOAD_DATE = 'LOAD_DTS';
 
   return `
 config {
