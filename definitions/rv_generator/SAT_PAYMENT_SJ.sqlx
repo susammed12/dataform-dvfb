@@ -6,7 +6,7 @@ config {
 }
 
 SELECT
-  MD5(PaymentID) AS HK_PaymentID,
+  TO_HEX(MD5(PaymentID)) AS HK_PaymentID,
   PaymentMethod,
   Amount,
   TransactionDate,

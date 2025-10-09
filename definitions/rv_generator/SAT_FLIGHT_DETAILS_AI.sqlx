@@ -6,7 +6,7 @@ config {
 }
 
 SELECT
-  MD5(FlightID) AS HK_FlightID,
+  TO_HEX(MD5(FlightID)) AS HK_FlightID,
   FlightNumber,
   ArrivalDateTime,
   ScheduledDepartureDateTime,

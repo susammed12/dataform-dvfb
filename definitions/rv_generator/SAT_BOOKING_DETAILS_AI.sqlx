@@ -6,7 +6,7 @@ config {
 }
 
 SELECT
-  MD5(BookingID) AS HK_BookingID,
+  TO_HEX(MD5(BookingID)) AS HK_BookingID,
   FlightID,
   PassengerID,
   Status,

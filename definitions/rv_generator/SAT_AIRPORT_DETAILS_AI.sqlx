@@ -6,7 +6,7 @@ config {
 }
 
 SELECT
-  MD5(AirportCode) AS HK_AirportCode,
+  TO_HEX(MD5(AirportCode)) AS HK_AirportCode,
   AirportName,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'AI_AIRPORT_DETAILS' AS REC_SRC

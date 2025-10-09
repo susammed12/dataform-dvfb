@@ -6,7 +6,7 @@ config {
 }
 
 SELECT
-  MD5(PassengerID) AS HK_PassengerID,
+  TO_HEX(MD5(PassengerID)) AS HK_PassengerID,
   FirstName,
   LastName,
   DOB,
