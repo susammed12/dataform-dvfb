@@ -1,4 +1,4 @@
 defaultProject: sky-vault-473510
-defaultDataset: raw_vault
+defaultDataset: staging
 defaultAssertionDataset: raw_vault
 dataformCoreVersion: 3.0.26
