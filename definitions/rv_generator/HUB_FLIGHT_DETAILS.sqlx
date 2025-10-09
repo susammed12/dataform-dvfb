@@ -1,0 +1,24 @@
+config {
+  type: "table",
+  bigquery: { partitionBy: "LOAD_DTS", clusterBy: ["HK_FlightID"] },
+  schema: "raw_vault",
+  tags: ["hub"]
+}
+
+SELECT
+  MD5(FlightID) AS HK_FlightID,
+  FlightID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'AI_FLIGHT_DETAILS' AS REC_SRC
+FROM ${ref("AI_FLIGHT_DETAILS")}
+WHERE FlightID IS NOT NULL
+GROUP BY FlightID
+UNION ALL
+SELECT
+  MD5(FlightID) AS HK_FlightID,
+  FlightID,
+  CURRENT_TIMESTAMP() AS LOAD_DTS,
+  'SJ_FLIGHT_DETAILS' AS REC_SRC
+FROM ${ref("SJ_FLIGHT_DETAILS")}
+WHERE FlightID IS NOT NULL
+GROUP BY FlightID
