@@ -7,9 +7,9 @@ config {
 
 SELECT
   TO_HEX(MD5(COALESCE(FlightID, '') || '|' || COALESCE(OriginAirportCode, '') || '|' || COALESCE(DestinationAirportCode, ''))) AS HK_L_AIRPORT_FLIGHT_DETAILS,
-  MD5(FlightID) AS HK_FlightID,
-  MD5(OriginAirportCode) AS HK_OriginAirportCode,
-  MD5(DestinationAirportCode) AS HK_DestinationAirportCode,
+  TO_HEX(MD5(FlightID)) AS HK_FlightID,
+  TO_HEX(MD5(OriginAirportCode)) AS HK_OriginAirportCode,
+  TO_HEX(MD5(DestinationAirportCode)) AS HK_DestinationAirportCode,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'AI_FLIGHT_DETAILS' AS REC_SRC
 FROM ${ref("AI_FLIGHT_DETAILS")}
@@ -19,9 +19,9 @@ UNION ALL
 
 SELECT
   TO_HEX(MD5(COALESCE(FlightID, '') || '|' || COALESCE(OriginAirportCode, '') || '|' || COALESCE(DestinationAirportCode, ''))) AS HK_L_AIRPORT_FLIGHT_DETAILS,
-  MD5(FlightID) AS HK_FlightID,
-  MD5(OriginAirportCode) AS HK_OriginAirportCode,
-  MD5(DestinationAirportCode) AS HK_DestinationAirportCode,
+  TO_HEX(MD5(FlightID)) AS HK_FlightID,
+  TO_HEX(MD5(OriginAirportCode)) AS HK_OriginAirportCode,
+  TO_HEX(MD5(DestinationAirportCode)) AS HK_DestinationAirportCode,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'SJ_FLIGHT_DETAILS' AS REC_SRC
 FROM ${ref("SJ_FLIGHT_DETAILS")}

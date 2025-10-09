@@ -7,8 +7,8 @@ config {
 
 SELECT
   TO_HEX(MD5(COALESCE(BookingID, '') || '|' || COALESCE(PaymentID, ''))) AS HK_L_BOOKING_PAYMENT_DETAILS,
-  MD5(BookingID) AS HK_BookingID,
-  MD5(PaymentID) AS HK_PaymentID,
+  TO_HEX(MD5(BookingID)) AS HK_BookingID,
+  TO_HEX(MD5(PaymentID)) AS HK_PaymentID,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'AI_BOOKING_DETAILS' AS REC_SRC
 FROM ${ref("AI_BOOKING_DETAILS")}
@@ -18,8 +18,8 @@ UNION ALL
 
 SELECT
   TO_HEX(MD5(COALESCE(BookingID, '') || '|' || COALESCE(PaymentID, ''))) AS HK_L_BOOKING_PAYMENT_DETAILS,
-  MD5(BookingID) AS HK_BookingID,
-  MD5(PaymentID) AS HK_PaymentID,
+  TO_HEX(MD5(BookingID)) AS HK_BookingID,
+  TO_HEX(MD5(PaymentID)) AS HK_PaymentID,
   CURRENT_TIMESTAMP() AS LOAD_DTS,
   'SJ_BOOKING_DETAILS' AS REC_SRC
 FROM ${ref("SJ_BOOKING_DETAILS")}
