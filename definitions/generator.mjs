@@ -25,7 +25,7 @@ function generateHub(table_name, business_key, source_table_AI, source_table_SJ)
 
 config {
   type: "table",
-  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_AirportCode"] },
+  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_${business_key}"] },
   schema: "raw_vault",
   tags: ["hub"]
 }
@@ -63,7 +63,7 @@ function generateSatellite_AI(table_name, business_key, descriptive_fields_AI, s
   return `
 config {
   type: "table",
-  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_AirportCode"] },
+  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_${business_key}"] },
   schema: "raw_vault",
   tags: ["satellite"]
 }
@@ -92,7 +92,7 @@ function generateSatellite_SJ(table_name, business_key, descriptive_fields_SJ, s
   return `
 config {
   type: "table",
-  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_AirportCode"] },
+  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_${business_key}"] },
   schema: "raw_vault",
   tags: ["satellite"]
 }
@@ -119,7 +119,7 @@ function generateLink(table_name, business_key, source_table_AI, source_table_SJ
   return `
 config {
   type: "table",
-  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_AirportCode"] },
+  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_${business_key}"] },
   schema: "raw_vault",
   tags: ["link"]
 }
