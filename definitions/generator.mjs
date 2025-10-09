@@ -36,7 +36,7 @@ config {
 SELECT
   MD5(${business_key}) AS HK_${business_key},
   ${business_key},
-  ${CURRENT_DATE} AS ${LOAD_DATE},
+  CURRENT_TIMESTAMP() AS ${LOAD_DATE},
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
 WHERE ${business_key} IS NOT NULL
@@ -45,7 +45,7 @@ UNION ALL
 SELECT
   MD5(${business_key}) AS HK_${business_key},
   ${business_key},
-  ${CURRENT_DATE} AS ${LOAD_DATE},
+  CURRENT_TIMESTAMP() AS ${LOAD_DATE},
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${business_key} IS NOT NULL
@@ -76,7 +76,7 @@ config {
 SELECT
   MD5(${business_key}) AS HK_${business_key},
   ${attrSelect},
-  ${CURRENT_DATE} AS ${LOAD_DATE},
+  CURRENT_TIMESTAMP() AS ${LOAD_DATE},
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
 WHERE ${business_key} IS NOT NULL
@@ -107,7 +107,7 @@ config {
 SELECT
   MD5(${business_key}) AS HK_${business_key},
   ${attrSelect},
-  ${CURRENT_DATE} AS ${LOAD_DATE},
+  CURRENT_TIMESTAMP() AS ${LOAD_DATE},
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${business_key} IS NOT NULL
@@ -136,7 +136,7 @@ config {
 SELECT
   MD5(${hashExpression}) AS ${hashKey},
   ${md5EachKey},
-  ${CURRENT_DATE} AS ${LOAD_DATE},
+  CURRENT_TIMESTAMP() AS ${LOAD_DATE},
   '${source_table_AI}' AS REC_SRC
 FROM \${ref("${source_table_AI}")}
 WHERE ${notNullConditions}
@@ -146,7 +146,7 @@ UNION ALL
 SELECT
   MD5(${hashExpression}) AS ${hashKey},
   ${md5EachKey},
-  ${CURRENT_DATE} AS ${LOAD_DATE},
+  CURRENT_TIMESTAMP() AS ${LOAD_DATE},
   '${source_table_SJ}' AS REC_SRC
 FROM \${ref("${source_table_SJ}")}
 WHERE ${notNullConditions}
