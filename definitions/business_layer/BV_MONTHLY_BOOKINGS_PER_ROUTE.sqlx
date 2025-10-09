@@ -1,0 +1,31 @@
+config {
+type: "table",
+schema: "business_vault",
+tags: ["business_vault", "monthly_bookings_per_route"]
+}
+
+SELECT Route, Month, sum(Total_Bookings) as Total_Bookings from (
+(SELECT FD.originairportcode || '-' || destinationairportcode as Route,FORMAT_DATE('%B %Y', DATE(BD.BookingDate)) AS Month,
+count(*) as Total_Bookings
+FROM 
+    ${ref("SAT_BOOKING_DETAILS_AI")} BD
+ JOIN ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} LBFP 
+      ON LBFP.HK_BOOKINGID = BD.HK_BOOKINGID
+      AND LBFP.REC_SRC = 'AI_BOOKING_DETAILS' 
+ JOIN 
+    ${ref("SAT_FLIGHT_DETAILS_AI")} FD ON LBFP.HK_FlightID = FD.HK_FlightID 
+GROUP BY 1,2
+ORDER BY 1,2 )
+UNION ALL
+(SELECT FD.originairportcode || '-' || destinationairportcode as Route,FORMAT_DATE('%B %Y', DATE(BD.BookingDate)) AS Month,
+count(*) as Total_Bookings
+FROM 
+    ${ref("SAT_BOOKING_DETAILS_SJ")} BD
+ JOIN ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} LBFP 
+      ON LBFP.HK_BOOKINGID = BD.HK_BOOKINGID
+      AND LBFP.REC_SRC = 'AI_BOOKING_DETAILS' 
+ JOIN 
+    ${ref("SAT_FLIGHT_DETAILS_SJ")} FD ON LBFP.HK_FlightID = FD.HK_FlightID 
+GROUP BY 1,2
+ORDER BY 1,2 ) )
+group by 1,2

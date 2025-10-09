@@ -1,0 +1,34 @@
+  config {
+type: "table",
+schema: "business_vault",
+tags: ["business_vault", "top_revenue_generating_flights"]
+}
+  SELECT * FROM 
+  (select FD.FlightNumber,'Air India' as FlightName,FD.ORIGINAIRPORTCODE||'-'||fd.DESTINATIONAIRPORTCODE AS Route , SUM(P.AMOUNT) AS Total_Revenue
+FROM 
+  ${ref("SAT_BOOKING_DETAILS_AI")} b
+  join  ${ref("LINK_BOOKING_PAYMENT_DETAILS")} lbp on b.hk_bookingid = lbp.hk_bookingid
+  and lbp.rec_src = 'AI_BOOKING_DETAILS'
+JOIN 
+  ${ref("SAT_PAYMENT_AI")} p ON p.hk_PaymentID = lbp.hk_PaymentID
+  join ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} lbfp on lbfp.hk_bookingid = b.HK_BookingID
+  and lbfp.rec_src = 'AI_BOOKING_DETAILS'
+JOIN ${ref("SAT_FLIGHT_DETAILS_AI")} FD ON FD.HK_FLIGHTID = LBFP.HK_FLIGHTID GROUP BY 1,2,3
+ORDER BY 
+  TOTAL_REVENUE DESC
+LIMIT 10)
+union all
+  (select FD.FLIGHTNUMBER,'Spice Jet' as FlighName,FD.ORIGINAIRPORTCODE||'-'||fd.DESTINATIONAIRPORTCODE, SUM(P.AMOUNT) AS TOTAL_REVENUE
+FROM 
+  ${ref("SAT_BOOKING_DETAILS_SJ")} b
+  join  ${ref("LINK_BOOKING_PAYMENT_DETAILS")} lbp on b.hk_bookingid = lbp.hk_bookingid
+  and lbp.rec_src = 'AI_BOOKING_DETAILS'
+JOIN 
+  ${ref("SAT_PAYMENT_SJ")} p ON p.hk_PaymentID = lbp.hk_PaymentID
+  join ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} lbfp on lbfp.hk_bookingid = b.HK_BookingID
+  and lbfp.rec_src = 'AI_BOOKING_DETAILS'
+JOIN ${ref("SAT_FLIGHT_DETAILS_SJ")} FD ON FD.HK_FLIGHTID = LBFP.HK_FLIGHTID GROUP BY 1,2,3
+ORDER BY 
+  TOTAL_REVENUE DESC
+LIMIT 10) ORDER BY TOTAL_REVENUE DESC
+LIMIT 3

@@ -1,0 +1,93 @@
+config {
+type: "table",
+schema: "business_vault",
+tags: ["business_vault", "frequent_flyers_by_age_group"]
+}
+SELECT * FROM 
+(SELECT
+  age_group.AgeGroupID,'Air India' as Airline,
+  COUNT(DISTINCT PassengerID) AS FrequentFlyerCount
+FROM (
+  SELECT
+    b.PassengerID,
+    b.BookingDate,
+    p.DOB,
+    TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) AS Age,
+    CASE
+      WHEN b.BookingDate BETWEEN DATE('2025-01-01') AND DATE('2025-08-22') THEN
+        CASE
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 0 AND 2 THEN 1
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 3 AND 17 THEN 2
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 18 AND 49 THEN 3
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 50 AND 99 THEN 4
+          ELSE 5
+        END
+      WHEN b.BookingDate >= DATE('2025-08-23') THEN
+        CASE
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 0 AND 2 THEN 1
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 3 AND 19 THEN 2
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 20 AND 50 THEN 3
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 51 AND 99 THEN 4
+          ELSE 5
+        END
+    END AS AgeGroupID
+  FROM
+    ${ref("SAT_BOOKING_DETAILS_AI")} b
+  JOIN  ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} lbfp
+        on b.hk_bookingid = lbfp.hk_bookingid
+join  ${ref("SAT_PASSENGER_DETAILS_AI")} p
+       ON lbfp.hk_PassengerID = p.hk_PassengerID
+  GROUP BY
+    b.PassengerID, b.BookingDate, p.DOB
+  HAVING
+    COUNT(b.hk_BookingID) > 1
+) AS age_group
+GROUP BY
+  age_group.AgeGroupID,Airline
+ORDER BY
+  age_group.AgeGroupID )
+
+  UNION ALL
+
+ ( SELECT
+  age_group.AgeGroupID,'Spice Jet' as Airline,
+  COUNT(DISTINCT PassengerID) AS FrequentFlyerCount
+FROM (
+  SELECT
+    b.PassengerID,
+    b.BookingDate,
+    p.DOB,
+    TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) AS Age,
+    CASE
+      WHEN b.BookingDate BETWEEN DATE('2025-01-01') AND DATE('2025-08-22') THEN
+        CASE
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 0 AND 2 THEN 1
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 3 AND 17 THEN 2
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 18 AND 49 THEN 3
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 50 AND 99 THEN 4
+          ELSE 5
+        END
+      WHEN b.BookingDate >= DATE('2025-08-23') THEN
+        CASE
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 0 AND 2 THEN 1
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 3 AND 19 THEN 2
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 20 AND 50 THEN 3
+          WHEN TIMESTAMP_DIFF(b.BookingDate, p.DOB, YEAR) BETWEEN 51 AND 99 THEN 4
+          ELSE 5
+        END
+    END AS AgeGroupID
+  FROM
+    ${ref("SAT_BOOKING_DETAILS_SJ")} b
+  JOIN  ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} lbfp
+        on b.hk_bookingid = lbfp.hk_bookingid
+join  ${ref("SAT_PASSENGER_DETAILS_SJ")} p
+       ON lbfp.hk_PassengerID = p.hk_PassengerID
+  GROUP BY
+    b.PassengerID, b.BookingDate, p.DOB
+  HAVING
+    COUNT(b.hk_BookingID) > 1
+) AS age_group
+GROUP BY
+  age_group.AgeGroupID,Airline
+ORDER BY
+  age_group.AgeGroupID ) ORDER BY 2,1

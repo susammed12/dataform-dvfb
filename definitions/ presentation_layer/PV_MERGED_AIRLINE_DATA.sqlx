@@ -1,0 +1,94 @@
+  config {
+type: "table",
+schema: "presentation_vault",
+tags: ["presentation_vault", "merged_airline_data"]
+}
+SELECT * FROM (
+(SELECT DISTINCT HBD.BookingID,
+    SFD.FlightNumber,
+  --  SAD.FlightID,
+    PassengerID,
+    SAD.Status,
+    BookingDate,
+    SeatNumber,
+    SeatClass,
+    PaymentID,
+     'Air India' as AirLine,
+    DOB,
+    FORMAT_TIMESTAMP('%Y-%m-%d %H:%M', ScheduledDepartureDateTime) AS ScheduledDepartureDateTime,
+    FORMAT_TIMESTAMP('%Y-%m-%d %H:%M', ArrivalDateTime) AS ArrivalDateTime,
+    FORMAT_TIMESTAMP('%Y-%m-%d %H:%M', ActualDepartureDateTime) AS ActualDepartureDateTime,
+    SAD2.airportname AS OriginAirportName,
+    t1.AirportName AS DestinationAirportName,
+    PaymentMethod,
+    Amount,
+    TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, HOUR) AS Delayed_Hours
+FROM ${ref("SAT_BOOKING_DETAILS_AI")} SAD
+JOIN ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} LBFPD
+ON SAD.HK_BOOKINGID = LBFPD.HK_BOOKINGID 
+AND LBFPD.REC_SRC = 'AI_BOOKING_DETAILS'
+JOIN ${ref("SAT_FLIGHT_DETAILS_AI")} SFD
+ON LBFPD.HK_FLIGHTID = SFD.HK_FLIGHTID 
+JOIN ${ref("SAT_PASSENGER_DETAILS_AI")} SPD  
+ON LBFPD.HK_PASSENGERID = SPD.HK_PASSENGERID 
+JOIN ${ref("LINK_BOOKING_PAYMENT_DETAILS")} LBPD  
+ON SAD.HK_BOOKINGID = LBPD.HK_BOOKINGID 
+AND LBPD.REC_SRC = 'AI_BOOKING_DETAILS'
+JOIN ${ref("SAT_PAYMENT_AI")} SP  
+ON LBPD.HK_PAYMENTID = SP.HK_PAYMENTID
+JOIN ${ref("LINK_AIRPORT_FLIGHT_DETAILS")} LAFD 
+ ON SFD.HK_FLIGHTID = LAFD.HK_FLIGHTID 
+ AND LAFD.REC_SRC = 'AI_FLIGHT_DETAILS'
+ LEFT JOIN ${ref("SAT_AIRPORT_DETAILS_AI")} AS t1
+ON LAFD.HK_DestinationAirportCode = t1.HK_AirportCode
+ JOIN ${ref("SAT_AIRPORT_DETAILS_AI")} SAD2 
+ ON LAFD.HK_ORIGINAIRPORTCODE = SAD2.HK_AIRPORTCODE 
+ join ${ref("HUB_BOOKING_DETAILS")} HBD  
+ ON SAD.HK_BOOKINGID = HBD.HK_BOOKINGID 
+ORDER BY 1
+)
+UNION ALL
+( SELECT DISTINCT HBD.BookingID,
+    SFD.FlightNumber,
+  --  SAD.FlightID,
+    PassengerID,
+    SAD.Status,
+    BookingDate,
+    SeatNumber,
+    SeatClass,
+    PaymentID,
+     'Spice Jet' as AirLine,
+    DOB,
+    FORMAT_TIMESTAMP('%Y-%m-%d %H:%M', ScheduledDepartureDateTime) AS ScheduledDepartureDateTime,
+    FORMAT_TIMESTAMP('%Y-%m-%d %H:%M', ArrivalDateTime) AS ArrivalDateTime,
+    FORMAT_TIMESTAMP('%Y-%m-%d %H:%M', ActualDepartureDateTime) AS ActualDepartureDateTime,
+    SAD2.airportname AS OriginAirportName,
+    t1.AirportName AS DestinationAirportName,
+    PaymentMethod,
+    Amount,
+    TIMESTAMP_DIFF(actualdeparturedatetime, scheduleddeparturedatetime, HOUR) AS Delayed_Hours
+FROM ${ref("SAT_BOOKING_DETAILS_SJ")} SAD
+JOIN ${ref("LINK_BOOKING_FLIGHT_PASSENGER_DETAILS")} LBFPD
+ON SAD.HK_BOOKINGID = LBFPD.HK_BOOKINGID 
+AND LBFPD.REC_SRC = 'SJ_BOOKING_DETAILS'
+JOIN ${ref("SAT_FLIGHT_DETAILS_SJ")} SFD
+ON LBFPD.HK_FLIGHTID = SFD.HK_FLIGHTID 
+JOIN ${ref("SAT_PASSENGER_DETAILS_SJ")} SPD  
+ON LBFPD.HK_PASSENGERID = SPD.HK_PASSENGERID 
+JOIN ${ref("LINK_BOOKING_PAYMENT_DETAILS")} LBPD  
+ON SAD.HK_BOOKINGID = LBPD.HK_BOOKINGID 
+AND LBPD.REC_SRC = 'SJ_BOOKING_DETAILS'
+JOIN ${ref("SAT_PAYMENT_SJ")} SP  
+ON LBPD.HK_PAYMENTID = SP.HK_PAYMENTID
+JOIN ${ref("LINK_AIRPORT_FLIGHT_DETAILS")} LAFD 
+ ON SFD.HK_FLIGHTID = LAFD.HK_FLIGHTID 
+ AND LAFD.REC_SRC = 'SJ_FLIGHT_DETAILS'
+LEFT JOIN ${ref("SAT_AIRPORT_DETAILS_SJ")} AS t1
+ON LAFD.HK_DestinationAirportCode = t1.HK_AirportCode
+ JOIN ${ref("SAT_AIRPORT_DETAILS_SJ")} SAD2 
+ ON LAFD.HK_ORIGINAIRPORTCODE = SAD2.HK_AIRPORTCODE 
+ join ${ref("HUB_BOOKING_DETAILS")} HBD  
+ ON SAD.HK_BOOKINGID = HBD.HK_BOOKINGID 
+ORDER BY 1
+)
+) ORDER BY 1,Airline

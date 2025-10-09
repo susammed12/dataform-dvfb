@@ -1,0 +1,23 @@
+config {
+type: "table",
+schema: "business_vault",
+tags: ["business_vault", "avg_ticket_price_per_class"]
+}
+ 
+SELECT SeatClass,ROUND(AVG(AVG_TICKET)) AS AVG_TICKET_PRICE FROM(
+(SELECT SeatClass,LBP.REC_SRC,ROUND(AVG(SPAI.Amount)) AS AVG_TICKET
+FROM ${ref("LINK_BOOKING_PAYMENT_DETAILS")} LBP
+JOIN ${ref("SAT_BOOKING_DETAILS_AI")} SB
+ON (LBP.HK_BookingID = SB.HK_BookingID)
+JOIN ${ref("SAT_PAYMENT_AI")} SPAI
+ON (LBP.HK_PaymentID = SPAI.HK_PaymentID)
+GROUP BY 1,2)
+ 
+UNION ALL
+(SELECT SeatClass,LBP.REC_SRC,ROUND(AVG(Amount)) AS AVG_TICKET
+FROM ${ref("LINK_BOOKING_PAYMENT_DETAILS")} LBP
+JOIN ${ref("SAT_BOOKING_DETAILS_SJ")} SB
+ON (LBP.HK_BookingID = SB.HK_BookingID)
+JOIN ${ref("SAT_PAYMENT_SJ")} SP
+ON (LBP.HK_PaymentID = SP.HK_PaymentID)
+GROUP BY 1,2) ) GROUP BY 1
