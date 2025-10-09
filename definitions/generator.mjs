@@ -119,7 +119,7 @@ function generateLink(table_name, business_key, source_table_AI, source_table_SJ
   return `
 config {
   type: "table",
-  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["HK_${business_key}"] },
+  bigquery: { partitionBy: "DATE(LOAD_DTS)", clusterBy: ["${hashKey}"] },
   schema: "raw_vault",
   tags: ["link"]
 }
